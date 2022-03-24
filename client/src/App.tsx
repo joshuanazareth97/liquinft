@@ -5,12 +5,16 @@ import { BrowserRouter, Route, Routes } from "react-router-dom";
 import { routeList } from "routes";
 import { theme } from "Theme";
 import "./App.css";
+import { store } from "store";
+import { Provider } from "react-redux";
 
 function App() {
   return (
-    <ThemeProvider theme={theme}>
-      <AppContent />
-    </ThemeProvider>
+    <Provider store={store}>
+      <ThemeProvider theme={theme}>
+        <AppContent />
+      </ThemeProvider>
+    </Provider>
   );
 }
 
