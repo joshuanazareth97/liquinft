@@ -22,7 +22,6 @@ const request = Axios.create(axiosParams);
 
 request.interceptors.request.use(
   (config) => {
-    console.log(config.headers);
     const token = select(store.getState());
     if (token) {
       config.headers = {
