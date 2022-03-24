@@ -1,12 +1,12 @@
 import { ThemeProvider } from "@mui/material/styles";
 import ProtectedRoute from "components/ProtectedRoute/ProtectedRoute";
 import React from "react";
+import { Provider } from "react-redux";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import { routeList } from "routes";
-import { theme } from "Theme";
-import "./App.css";
 import { store } from "store";
-import { Provider } from "react-redux";
+import { theme } from "theme";
+import "./App.css";
 
 function App() {
   return (
