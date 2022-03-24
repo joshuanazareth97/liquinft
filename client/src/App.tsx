@@ -1,3 +1,4 @@
+import ProtectedRoute from "components/ProtectedRoute/ProtectedRoute";
 import React from "react";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import { routeList } from "routes";
@@ -8,8 +9,20 @@ function App() {
     <BrowserRouter>
       <Routes>
         {routeList.map(({ Component, ...route }) => {
-          console.log(route);
-          return <Route path={route.url} element={<Component />} />;
+          return (
+            <Route
+              path={route.url}
+              element={
+                route.protected ? (
+                  <ProtectedRoute isAuth={false}>
+                    <Component />
+                  </ProtectedRoute>
+                ) : (
+                  <Component />
+                )
+              }
+            />
+          );
         })}
       </Routes>
     </BrowserRouter>

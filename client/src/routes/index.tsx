@@ -12,4 +12,10 @@ export const routeList: IRoute[] = [
     Component: Homepage,
     protected: false,
   },
+  // PROTECTED ROUTE
+  {
+    url: "/secure",
+    Component: Homepage,
+    protected: true,
+  },
 ];
