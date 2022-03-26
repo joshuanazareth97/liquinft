@@ -1,9 +1,11 @@
+import AppLayout from "layouts/AppLayout/AppLayout";
 import Homepage from "pages/Homepage/Homepage";
 
 interface IRoute {
   url: string;
   Component: React.FC;
   protected: Boolean;
+  LayoutElement?: React.FC;
 }
 
 export const routeList: IRoute[] = [
@@ -17,5 +19,6 @@ export const routeList: IRoute[] = [
     url: "/secure",
     Component: Homepage,
     protected: true,
+    LayoutElement: AppLayout,
   },
 ];
