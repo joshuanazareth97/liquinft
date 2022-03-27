@@ -1,75 +1,121 @@
+import { MdOutlineGeneratingTokens } from "react-icons/md";
 import {
   AppBar,
+  Box,
   Button,
   Container,
   Dialog,
   DialogActions,
   DialogContent,
   DialogTitle,
+  IconButton,
   Toolbar,
+  Tooltip,
   Typography,
 } from "@mui/material";
-import React, { useEffect, useState } from "react";
-import { useCallback } from "react";
+import { useZilpay } from "contexts/ZilContext/ZilContext";
+import React, { useCallback, useEffect, useState } from "react";
 import { FaWallet } from "react-icons/fa";
-import { Outlet } from "react-router-dom";
+import { Link as RouterLink, Outlet } from "react-router-dom";
+import { truncateString } from "utils";
+import { ToastContainer } from "react-toastify";
 
 type Props = {
   children?: React.ReactNode;
 };
 
 const DefaultLayout = ({ children }: Props) => {
-  const [zilpayPresent, setZilpayPresent] = useState(false);
-  const [zilpayObj, setZilpayObj] = useState<any>(null);
   const [infoOpen, setInfoOpen] = useState(false);
+  const { zilPay, setZilPay, error, setError, currentUser, setCurrentUser } =
+    useZilpay();
 
   useEffect(() => {
     // @ts-ignore
-    const zilpay = window.zilPay;
-    setZilpayObj(zilpay);
-    // setZilpayPresent(!zilpay);
-    setZilpayPresent(!!zilpay);
-  }, []);
+    const windowZP = window.zilPay;
+    console.log(windowZP);
+    setZilPay(windowZP);
+  }, [setZilPay]);
 
   useEffect(() => {
-    setInfoOpen(!zilpayPresent);
-  }, [zilpayPresent, setInfoOpen]);
+    if (!zilPay) {
+      return setInfoOpen(true);
+    } else {
+      setInfoOpen(false);
+      handleWalletConnect();
+    }
+  }, [zilPay]);
 
   const handleWalletConnect = useCallback(async () => {
-    if (!zilpayPresent) {
+    if (!zilPay) {
       return setInfoOpen(true);
     }
-    // const conn = await zilpayObj.wallet.connect();
-  }, [zilpayObj, setInfoOpen]);
+    try {
+      const conn = await zilPay.wallet.connect();
+      if (conn) setCurrentUser(zilPay.wallet.defaultAccount);
+    } catch (err: any) {
+      setError(err);
+    }
+  }, [zilPay, setError, setCurrentUser]);
 
   return (
     <>
-      <AppBar color="secondary" position="static">
+      <AppBar color="primary" position="static">
         <Toolbar>
           <Typography
+            color="white"
             fontWeight="bold"
             variant="h6"
-            component="div"
-            sx={{ flexGrow: 1 }}
+            component={RouterLink}
+            to="/"
           >
             LiquiNFT
           </Typography>
-          <Button
+          <Box
             sx={{
-              borderRadius: "2rem",
-              padding: "0.5rem 1rem",
+              display: "flex",
+              justifyContent: "flex-end",
+              flexGrow: 1,
+              "& > .MuiIconButton-root": {
+                marginRight: "1rem",
+                color: "white",
+              },
             }}
-            endIcon={<FaWallet size="1rem" />}
-            color="primary"
-            variant="contained"
-            onClick={handleWalletConnect}
           >
-            Connect Wallet
-          </Button>
+            <Tooltip title="Your NFTs" placement="bottom">
+              <IconButton component={RouterLink} to="/nft">
+                <MdOutlineGeneratingTokens />
+              </IconButton>
+            </Tooltip>
+            <Button
+              sx={{
+                borderRadius: "2rem",
+                padding: "0.5rem 1rem",
+              }}
+              startIcon={<FaWallet size="1rem" />}
+              color="secondary"
+              variant="contained"
+              onClick={
+                currentUser
+                  ? async () => {
+                      await zilPay.wallet.disconnect();
+                    }
+                  : handleWalletConnect
+              }
+            >
+              {(currentUser && truncateString(currentUser.base16)) ||
+                "Connect Wallet"}
+            </Button>
+          </Box>
           {/* <IconButton></IconButton> */}
         </Toolbar>
       </AppBar>
-      <Container>{children ?? <Outlet />}</Container>
+      <Container
+        sx={{
+          paddingTop: "3rem",
+        }}
+      >
+        {children ?? <Outlet />}
+      </Container>
       <Dialog open={infoOpen}>
         <DialogTitle>Add the Zilpay wallet extension</DialogTitle>
         <DialogContent>
@@ -98,6 +144,7 @@ const DefaultLayout = ({ children }: Props) => {
           </Button>
         </DialogActions>
       </Dialog>
+      <ToastContainer />
     </>
   );
 };

@@ -1,5 +1,6 @@
 import AppLayout from "layouts/AppLayout/AppLayout";
 import Homepage from "pages/Homepage/Homepage";
+import NFTListPage from "pages/NFTListPage/NFTListPage";
 
 interface IRoute {
   url: string;
@@ -16,9 +17,9 @@ export const routeList: IRoute[] = [
   },
   // PROTECTED ROUTE
   {
-    url: "/secure",
-    Component: Homepage,
+    url: "/nft",
+    Component: NFTListPage,
     protected: true,
-    LayoutElement: AppLayout,
+    // LayoutElement: AppLayout,
   },
 ];

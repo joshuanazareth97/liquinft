@@ -12,18 +12,22 @@ import "./App.css";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import ErrorScreen from "pages/ErrorScreen/ErrorScreen";
+import { useZilpay, ZilProvider } from "contexts/ZilContext/ZilContext";
 
 function App() {
   return (
-    <Provider store={store}>
-      <ThemeProvider theme={theme}>
-        <AppContent />
-      </ThemeProvider>
-    </Provider>
+    <ZilProvider>
+      <Provider store={store}>
+        <ThemeProvider theme={theme}>
+          <AppContent />
+        </ThemeProvider>
+      </Provider>
+    </ZilProvider>
   );
 }
 
 const AppContent = () => {
+  const { currentUser } = useZilpay();
   return (
     <BrowserRouter>
       <Routes>
@@ -37,7 +41,7 @@ const AppContent = () => {
                 path={route.url}
                 element={
                   route.protected ? (
-                    <ProtectedRoute isAuth={true}>
+                    <ProtectedRoute isAuth={!!currentUser}>
                       <Component />
                     </ProtectedRoute>
                   ) : (

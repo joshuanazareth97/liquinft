@@ -1,9 +1,14 @@
+import { Typography } from "@mui/material";
 import React from "react";
 
 type Props = {};
 
 const Homepage = (props: Props) => {
-  return <h1>Homepage</h1>;
+  return (
+    <>
+      <Typography variant="h3">Home</Typography>
+    </>
+  );
 };
 
 export default Homepage;
