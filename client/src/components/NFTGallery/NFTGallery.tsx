@@ -141,8 +141,14 @@ const NFTGallery = ({ title, address, symbol }: Props) => {
           <Box
             sx={{
               display: "grid",
-              gridTemplateColumns: "repeat(3, 1fr)",
-              gap: 2,
+              gridTemplateColumns: {
+                xs: "repeat(1, 1fr)",
+                sm: "repeat(2, 1fr)",
+                md: "repeat(3, 1fr)",
+                lg: "repeat(5, 1fr)",
+                // xl: "repeat(6, 1fr)",
+              },
+              gap: 6,
             }}
           >
             {tokens?.length ? (
@@ -150,6 +156,7 @@ const NFTGallery = ({ title, address, symbol }: Props) => {
                 return (
                   // <Grid item sm={6} md={3} key={token.id}>
                   <NFTCard
+                    key={token.id}
                     onClick={() =>
                       // token.approved ? handleNFTClick(token) : approve()
                       handleNFTClick(token)

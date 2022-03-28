@@ -3,7 +3,13 @@ import Card from "@mui/material/Card";
 import CardContent from "@mui/material/CardContent";
 import CardMedia from "@mui/material/CardMedia";
 import React from "react";
-import { MdCheckCircle } from "react-icons/md";
+import {
+  MdApproval,
+  MdCheckCircle,
+  MdMail,
+  MdQuestionAnswer,
+  MdSend,
+} from "react-icons/md";
 import { theme } from "theme";
 
 type Props = {
@@ -38,13 +44,17 @@ const NFTCard = ({ approved, uri, tokenID, onClick }: Props) => {
             Token #{tokenID}
           </Typography>
           <Box display="flex" alignItems="center">
-            <MdCheckCircle
-              color={approved ? theme.palette.secondary.main : undefined}
-              size="1.25rem"
-              style={{ marginRight: "0.5rem" }}
-            />
-            <Typography fontSize="0.75rem">
-              {approved ? "A" : "Not a"}pproved for deposit
+            {approved ? (
+              <MdMail
+                color={theme.palette.secondary.main}
+                size="1.25rem"
+                style={{ marginRight: "0.5rem" }}
+              />
+            ) : (
+              <MdApproval size="1.25rem" style={{ marginRight: "0.5rem" }} />
+            )}
+            <Typography fontWeight="bold" fontSize="0.75rem">
+              {approved ? "Deposit" : "Approve"}
             </Typography>
           </Box>
         </CardContent>
