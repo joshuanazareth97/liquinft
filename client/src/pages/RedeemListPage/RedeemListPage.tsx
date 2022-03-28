@@ -17,7 +17,7 @@ import { FaCross, FaPlus } from "react-icons/fa";
 import { MdAdd, MdClose, MdHdrPlus, MdInfo } from "react-icons/md";
 import { toast } from "react-toastify";
 import { theme } from "theme";
-import { transferFT, getFractionalised } from "utils";
+import { transferFT, getFractionalised, checkRedeem } from "utils";
 
 type Props = {};
 
@@ -78,14 +78,16 @@ const RedeemListPage = (props: Props) => {
 
   const handleTokenClick = useCallback(
     async (token: IFracNFT) => {
-      console.log(token);
-      const txPromise = transferFT(zilPay, token.tokens_needed, token.ft);
+      const txPromise = token.readyToRedeem
+        ? checkRedeem(zilPay, token.id, token.address)
+        : transferFT(zilPay, token.tokens_needed, token.ft);
       const res = await toast.promise(txPromise, {
-        pending: "Burning FTs to prepare NFT for redemption",
+        pending: token.readyToRedeem
+          ? "Redeeming NFT..."
+          : "Burning FTs to prepare NFT for redemption",
         success: "Success!",
         error: "There was an error",
       });
-      console.log(res);
       loadTokens();
     },
     [zilPay]
