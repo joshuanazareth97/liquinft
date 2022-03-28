@@ -83,7 +83,7 @@ const NFTGallery = ({ title, address, symbol }: Props) => {
       const res = await toast.promise(approvePromise, {
         pending: "Approving NFT for use...",
         success: "Success!",
-        error: "Error!",
+        error: "There was an error",
       });
     } catch (err) {
       console.log(err);
@@ -117,7 +117,7 @@ const NFTGallery = ({ title, address, symbol }: Props) => {
       const res = await toast.promise(depositPromise, {
         pending: "Depositing your NFT and linking it to the provided tokens...",
         success: "Success!",
-        error: "Error!",
+        error: "There was an error",
       });
       setLinkWindowOpen(false);
     } catch (err) {

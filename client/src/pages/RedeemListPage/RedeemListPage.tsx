@@ -83,7 +83,7 @@ const RedeemListPage = (props: Props) => {
       const res = await toast.promise(txPromise, {
         pending: "Burning FTs to prepare NFT for redemption",
         success: "Success!",
-        error: "Error!",
+        error: "There was an error",
       });
       console.log(res);
       loadTokens();
