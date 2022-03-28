@@ -17,7 +17,7 @@ import React, { useCallback, useEffect, useState } from "react";
 import { MdGeneratingTokens, MdRefresh } from "react-icons/md";
 import { toast } from "react-toastify";
 import { theme } from "theme";
-import { approveNFT, depositNFT, getUSerNFTs } from "utils";
+import { approveNFT, depositNFT, getUserNFTs } from "utils";
 
 type Props = {
   title: string;
@@ -62,7 +62,7 @@ const NFTGallery = ({ title, address, symbol }: Props) => {
 
   useEffect(() => {
     if (!(contractState && currentUser)) return;
-    const userTokens: INFT[] = getUSerNFTs(contractState, currentUser.base16);
+    const userTokens: INFT[] = getUserNFTs(contractState, currentUser.base16);
     setTokens(userTokens);
   }, [contractState, currentUser]);
 

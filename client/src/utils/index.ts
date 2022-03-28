@@ -177,7 +177,7 @@ const transitionMessageAlert = (
   return transition;
 };
 
-export const getUSerNFTs = (contractState: any, address: string) => {
+export const getUserNFTs = (contractState: any, address: string) => {
   const { token_owners, token_uris, token_approvals } = contractState;
   const tokensOwned = Object.keys(token_owners).filter((key: string) => {
     return token_owners[key].toLowerCase() === address.toLowerCase();
@@ -189,4 +189,25 @@ export const getUSerNFTs = (contractState: any, address: string) => {
       approved: token_approvals[token] === LIQUISHARE_ADDRESS,
     };
   });
+};
+
+export const getFractionalised = (contractState: any) => {
+  const { nftaddr, nftid, num_shares2, tokbalance } = contractState;
+  const temp: any = {};
+  Object.keys(nftaddr).forEach((key: string) => {
+    const nftaddrVal = nftaddr[key];
+    temp[nftaddrVal] = temp[nftaddrVal] ? [...temp[nftaddrVal], key] : [key];
+  });
+  const result: any = {};
+  Object.keys(temp).forEach((key: string) => {
+    result[key] = temp[key].map((ft: string) => {
+      return {
+        ft,
+        id: nftid[ft],
+        tokens_needed: num_shares2[ft],
+        readyToRedeem: num_shares2[ft] === tokbalance[ft],
+      };
+    });
+  });
+  return result;
 };

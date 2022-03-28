@@ -33,7 +33,6 @@ const DefaultLayout = ({ children }: Props) => {
   useEffect(() => {
     // @ts-ignore
     const windowZP = window.zilPay;
-    console.log(windowZP);
     setZilPay(windowZP);
   }, [setZilPay]);
 

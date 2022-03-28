@@ -7,42 +7,77 @@ import {
   Tooltip,
   Typography,
 } from "@mui/material";
+import { LIQUISHARE_ADDRESS } from "app_contsants";
+import NFTCard from "components/NFTCard/NFTCard";
 import NFTGallery from "components/NFTGallery/NFTGallery";
 import { IContractInit, useZilpay } from "contexts/ZilContext/ZilContext";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useCallback } from "react";
 import { FaCross, FaPlus } from "react-icons/fa";
 import { MdAdd, MdClose, MdHdrPlus, MdInfo } from "react-icons/md";
 import { toast } from "react-toastify";
 import { theme } from "theme";
+import { getFractionalised } from "utils";
 
 type Props = {};
+
+interface IFracNFT {
+  ft: string;
+  id: string;
+  tokens_needed: string;
+  readyToRedeem: boolean;
+  address: string;
+  uri: string;
+}
 
 const RedeemListPage = (props: Props) => {
   const [addFieldOpen, setAddFieldOpen] = useState(false);
   const [addNFTAddress, setAddNFTAddress] = useState("");
 
   const { zilPay, userNFTs, setUserNFTs } = useZilpay();
+  const [contractState, setContractState] = useState<any>(null);
+  const [loading, setLoading] = useState(true);
+  const [list, setList] = useState<IFracNFT[] | null>(null);
 
-  const handleButtonClick = useCallback(async () => {
-    if (addFieldOpen) {
-      if (!addNFTAddress) return;
-      const contract = zilPay.contracts.at(addNFTAddress);
-      const state = await contract.getState();
-      const init = await contract.getInit();
-      const initObj: any = {};
-      init.forEach((param: any) => {
-        initObj[param.vname] = param.value;
+  const loadContract = useCallback(async () => {
+    if (!zilPay) return;
+    setLoading(true);
+    const contract = zilPay.contracts.at(LIQUISHARE_ADDRESS);
+    const state = await contract.getState();
+    setContractState(state);
+    setLoading(false);
+  }, [zilPay, setContractState, setLoading]);
+
+  useEffect(() => {
+    loadContract();
+  }, [loadContract]);
+
+  const loadTokens = useCallback(async () => {
+    if (!contractState || !zilPay) return;
+    const fns = getFractionalised(contractState);
+    const final: any = [];
+    for (let key in fns) {
+      const tokens = fns[key];
+      const contract = zilPay.contracts.at(key);
+      const nftState = await contract.getState();
+      tokens.forEach((token: any) => {
+        final.push({
+          ...token,
+          address: key,
+          uri: nftState.token_uris[token.id],
+        });
       });
-      const { _this_address: address, ...rest } = initObj;
-      if (userNFTs && address in userNFTs) {
-        toast("This NFT has already been added.");
-      }
-      setUserNFTs((userNFTS: any) => ({ ...userNFTs, [address]: rest }));
-    } else {
-      setAddFieldOpen(true);
     }
-  }, [addFieldOpen, addNFTAddress, userNFTs, setUserNFTs]);
+    setList(final);
+  }, [contractState, zilPay, setList]);
+
+  useEffect(() => {
+    loadTokens();
+  }, [loadTokens]);
+
+  const handleTokenClick = useCallback(() => {
+    console.log("token");
+  }, []);
 
   return (
     <>
@@ -80,79 +115,31 @@ const RedeemListPage = (props: Props) => {
             </Typography>
           </Box>
         </Typography>
-        <Box display="flex" alignItems="center">
-          <Tooltip title="Add New NFT" placement="bottom">
-            <Button
-              //   startIcon={}
-              sx={{
-                padding: "0.75rem 0.5rem",
-                borderRadius: addFieldOpen ? "6px 0  0 6px" : "6px",
-              }}
-              variant="contained"
-              onClick={handleButtonClick}
-            >
-              <MdAdd size="1.25rem" />
-              {/* {addFieldOpen ? "" : "Add an NFT"} */}
-            </Button>
-          </Tooltip>
-          <Collapse
-            orientation="horizontal"
-            collapsedSize={0}
-            in={addFieldOpen}
-          >
-            <TextField
-              placeholder="NFT Contract address"
-              sx={{
-                "& .MuiInputBase-root": {
-                  height: "2.75rem",
-                  borderRadius: "0 6px 6px 0",
-                },
-                "& .MuiInputBase-input": {
-                  fontWeight: "bold",
-                },
-              }}
-              value={addNFTAddress}
-              onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
-                setAddNFTAddress(event.target.value);
-              }}
-              onKeyUp={(event: React.KeyboardEvent<HTMLInputElement>) => {
-                if (event.key !== "Enter") return;
-                handleButtonClick();
-              }}
-              InputProps={{
-                endAdornment: (
-                  <IconButton
-                    onClick={() => {
-                      setAddNFTAddress("");
-                      setAddFieldOpen(false);
-                    }}
-                  >
-                    <MdClose size="1rem" />
-                  </IconButton>
-                ),
-              }}
-              variant="outlined"
-            />
-          </Collapse>
-        </Box>
       </Box>
-      {userNFTs ? (
-        Object.keys(userNFTs).map((key: string) => {
-          const metadata = userNFTs[key];
+      <Box
+        sx={{
+          display: "grid",
+          gridTemplateColumns: {
+            xs: "repeat(1, 1fr)",
+            sm: "repeat(2, 1fr)",
+            md: "repeat(3, 1fr)",
+            lg: "repeat(5, 1fr)",
+            // xl: "repeat(6, 1fr)",
+          },
+          gap: 6,
+        }}
+      >
+        {list?.map((token) => {
           return (
-            <NFTGallery
-              address={key}
-              key={key}
-              title={metadata.name}
-              symbol={metadata.symbol}
+            <NFTCard
+              onClick={handleTokenClick}
+              approved
+              tokenID={token.id}
+              uri={token.uri}
             />
           );
-        })
-      ) : (
-        <Typography>
-          You haven't added any NFTs. Click the + button to begin.
-        </Typography>
-      )}
+        })}
+      </Box>
     </>
   );
 };
