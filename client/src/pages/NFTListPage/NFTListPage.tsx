@@ -51,7 +51,7 @@ const NFTListPage = (props: Props) => {
         alignItems="center"
         justifyContent="space-between"
         padding="1rem 0"
-        borderBottom="2px solid lightGrey"
+        borderBottom="3px solid lightGrey"
         marginBottom="2rem"
       >
         <Typography

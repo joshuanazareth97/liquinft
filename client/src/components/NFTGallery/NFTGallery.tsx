@@ -16,6 +16,7 @@ import { useZilpay } from "contexts/ZilContext/ZilContext";
 import React, { useCallback, useEffect, useState } from "react";
 import { MdGeneratingTokens, MdRefresh } from "react-icons/md";
 import { toast } from "react-toastify";
+import { theme } from "theme";
 import { approveNFT, depositNFT, getUSerNFTs } from "utils";
 
 type Props = {
@@ -119,10 +120,17 @@ const NFTGallery = ({ title, address, symbol }: Props) => {
 
   return (
     <>
-      <Box display="flex" flexDirection="column" alignItems="flex-start">
-        <Box marginBottom="1.5rem" display="flex" alignItems="center">
+      <Box
+        display="flex"
+        flexDirection="column"
+        alignItems="stretch"
+        borderBottom="2px solid lightGrey"
+        marginBottom="3rem"
+        paddingBottom="2rem"
+      >
+        <Box marginBottom="0.5rem" display="flex" alignItems="center">
           <IconButton onClick={loadContract} style={{ marginRight: "0.5rem" }}>
-            <MdRefresh />
+            <MdRefresh color={theme.palette.primary.main} />
           </IconButton>
           <Typography variant="h6" fontWeight="bold">
             {title} ({symbol})
@@ -130,11 +138,17 @@ const NFTGallery = ({ title, address, symbol }: Props) => {
         </Box>
         {loading && <LinearProgress sx={{ alignSelf: "stretch" }} />}
         {!loading && (
-          <Grid container spacing={4}>
+          <Grid
+            container
+            sx={{
+              margin: 0,
+            }}
+            spacing={3}
+          >
             {tokens?.length ? (
               tokens.map((token) => {
                 return (
-                  <Grid item sm={6} md={3} lg={2} key={token.id}>
+                  <Grid item sm={6} md={3} key={token.id}>
                     <NFTCard
                       onClick={() =>
                         // token.approved ? handleNFTClick(token) : approve()
