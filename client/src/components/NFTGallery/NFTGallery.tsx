@@ -14,7 +14,12 @@ import {
 import NFTCard from "components/NFTCard/NFTCard";
 import { useZilpay } from "contexts/ZilContext/ZilContext";
 import React, { useCallback, useEffect, useState } from "react";
-import { MdGeneratingTokens, MdRefresh } from "react-icons/md";
+import {
+  MdApproval,
+  MdGeneratingTokens,
+  MdMail,
+  MdRefresh,
+} from "react-icons/md";
 import { toast } from "react-toastify";
 import { theme } from "theme";
 import { approveNFT, depositNFT, getUserNFTs } from "utils";
@@ -75,12 +80,11 @@ const NFTGallery = ({ title, address, symbol }: Props) => {
         selectedNFT.id,
         selectedNFT.address
       );
-      toast.promise(approvePromise, {
+      const res = await toast.promise(approvePromise, {
         pending: "Approving NFT for use...",
         success: "Success!",
         error: "Error!",
       });
-      const res = await approvePromise;
     } catch (err) {
       console.log(err);
     } finally {
@@ -110,12 +114,11 @@ const NFTGallery = ({ title, address, symbol }: Props) => {
         ftAddress,
         ftCount
       );
-      toast.promise(depositPromise, {
+      const res = await toast.promise(depositPromise, {
         pending: "Depositing your NFT and linking it to the provided tokens...",
         success: "Success!",
         error: "Error!",
       });
-      console.log(await depositPromise);
       setLinkWindowOpen(false);
     } catch (err) {
       console.log(err);
@@ -169,9 +172,31 @@ const NFTGallery = ({ title, address, symbol }: Props) => {
                         handleNFTClick(token);
                       }
                     }
-                    tokenID={token.id}
+                    primaryText={
+                      <Typography gutterBottom variant="h5" component="div">
+                        Token #{token.id}
+                      </Typography>
+                    }
                     uri={token.uri}
-                    approved={token.approved}
+                    secondaryText={
+                      <Box display="flex" alignItems="center">
+                        {token.approved ? (
+                          <MdMail
+                            color={theme.palette.secondary.main}
+                            size="1.25rem"
+                            style={{ marginRight: "0.5rem" }}
+                          />
+                        ) : (
+                          <MdApproval
+                            size="1.25rem"
+                            style={{ marginRight: "0.5rem" }}
+                          />
+                        )}
+                        <Typography fontWeight="bold" fontSize="0.75rem">
+                          {token.approved ? "Deposit" : "Approve"}
+                        </Typography>
+                      </Box>
+                    }
                   />
                   // </Grid>
                 );

@@ -17,7 +17,7 @@ import { FaCross, FaPlus } from "react-icons/fa";
 import { MdAdd, MdClose, MdHdrPlus, MdInfo } from "react-icons/md";
 import { toast } from "react-toastify";
 import { theme } from "theme";
-import { getFractionalised } from "utils";
+import { transferFT, getFractionalised } from "utils";
 
 type Props = {};
 
@@ -25,6 +25,7 @@ interface IFracNFT {
   ft: string;
   id: string;
   tokens_needed: string;
+  transferred: string;
   readyToRedeem: boolean;
   address: string;
   uri: string;
@@ -75,9 +76,20 @@ const RedeemListPage = (props: Props) => {
     loadTokens();
   }, [loadTokens]);
 
-  const handleTokenClick = useCallback(() => {
-    console.log("token");
-  }, []);
+  const handleTokenClick = useCallback(
+    async (token: IFracNFT) => {
+      console.log(token);
+      const txPromise = transferFT(zilPay, token.tokens_needed, token.ft);
+      const res = await toast.promise(txPromise, {
+        pending: "Burning FTs to prepare NFT for redemption",
+        success: "Success!",
+        error: "Error!",
+      });
+      console.log(res);
+      loadTokens();
+    },
+    [zilPay]
+  );
 
   return (
     <>
@@ -132,10 +144,17 @@ const RedeemListPage = (props: Props) => {
         {list?.map((token) => {
           return (
             <NFTCard
-              onClick={handleTokenClick}
-              approved
-              tokenID={token.id}
+              key={token.id}
+              onClick={() => handleTokenClick(token)}
               uri={token.uri}
+              primaryText={
+                <Typography fontWeight="bold">Token #{token.id}</Typography>
+              }
+              secondaryText={
+                <Typography fontSize="0.75rem" fontWeight="bold">
+                  {token.transferred} / {token.tokens_needed} deposited
+                </Typography>
+              }
             />
           );
         })}

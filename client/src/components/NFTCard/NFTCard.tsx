@@ -8,12 +8,12 @@ import { theme } from "theme";
 
 type Props = {
   uri: string;
-  tokenID: string;
-  approved: Boolean;
+  primaryText?: React.ReactNode;
+  secondaryText?: React.ReactNode;
   onClick?: React.MouseEventHandler<HTMLButtonElement>;
 };
 
-const NFTCard = ({ approved, uri, tokenID, onClick }: Props) => {
+const NFTCard = ({ secondaryText, uri, primaryText, onClick }: Props) => {
   return (
     <Card raised sx={{ maxWidth: 345 }}>
       <CardActionArea
@@ -31,26 +31,11 @@ const NFTCard = ({ approved, uri, tokenID, onClick }: Props) => {
           }}
           //   height="140"
           image={uri}
-          alt={`Token #${tokenID}`}
+          alt={`Fractionalised Token ${uri}`}
         />
         <CardContent>
-          <Typography gutterBottom variant="h5" component="div">
-            Token #{tokenID}
-          </Typography>
-          <Box display="flex" alignItems="center">
-            {approved ? (
-              <MdMail
-                color={theme.palette.secondary.main}
-                size="1.25rem"
-                style={{ marginRight: "0.5rem" }}
-              />
-            ) : (
-              <MdApproval size="1.25rem" style={{ marginRight: "0.5rem" }} />
-            )}
-            <Typography fontWeight="bold" fontSize="0.75rem">
-              {approved ? "Deposit" : "Approve"}
-            </Typography>
-          </Box>
+          {primaryText}
+          {secondaryText}
         </CardContent>
       </CardActionArea>
     </Card>

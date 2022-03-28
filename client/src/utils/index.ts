@@ -109,6 +109,37 @@ export const depositNFT = async (
   return await transitionMessageAlert(zilPay, tx.ID, "Deposit");
 };
 
+export const transferFT = async (
+  zilPay: any,
+  amount: string,
+  FTAddress: string
+) => {
+  const { contracts } = zilPay;
+  const liquiShareContract = contracts.at(FTAddress);
+  const gasPrice = zilPay.utils.units.toQa("1000", zilPay.utils.units.Units.Li);
+  const tx = await liquiShareContract.call(
+    "Transfer",
+    [
+      {
+        vname: "to",
+        type: "ByStr20",
+        value: LIQUISHARE_ADDRESS,
+      },
+      {
+        vname: "amount",
+        type: "Uint128",
+        value: amount,
+      },
+    ],
+    {
+      gasPrice,
+      gasLimit: zilPay.utils.Long.fromNumber(9000),
+    },
+    true
+  );
+  return await transitionMessageAlert(zilPay, tx.ID, "Transfer FTs");
+};
+
 export const checkRedeem = async (
   zilPay: any,
   NFTId: string,
@@ -118,7 +149,7 @@ export const checkRedeem = async (
   const liquiShareContract = contracts.at(LIQUISHARE_ADDRESS);
   const gasPrice = zilPay.utils.units.toQa("1000", zilPay.utils.units.Units.Li);
   const tx = await liquiShareContract.call(
-    "Deposit_and_link",
+    "check_and_redeem",
     [
       {
         vname: "nfttokenAddress",
@@ -137,7 +168,7 @@ export const checkRedeem = async (
     },
     true
   );
-  return await transitionMessageAlert(zilPay, tx.ID, "Deposit");
+  return await transitionMessageAlert(zilPay, tx.ID, "Check and redeem");
 };
 
 const transitionMessageAlert = (
@@ -205,6 +236,7 @@ export const getFractionalised = (contractState: any) => {
         ft,
         id: nftid[ft],
         tokens_needed: num_shares2[ft],
+        transferred: tokbalance[ft] || 0,
         readyToRedeem: num_shares2[ft] === tokbalance[ft],
       };
     });
