@@ -138,33 +138,33 @@ const NFTGallery = ({ title, address, symbol }: Props) => {
         </Box>
         {loading && <LinearProgress sx={{ alignSelf: "stretch" }} />}
         {!loading && (
-          <Grid
-            container
+          <Box
             sx={{
-              margin: 0,
+              display: "grid",
+              gridTemplateColumns: "repeat(3, 1fr)",
+              gap: 2,
             }}
-            spacing={3}
           >
             {tokens?.length ? (
               tokens.map((token) => {
                 return (
-                  <Grid item sm={6} md={3} key={token.id}>
-                    <NFTCard
-                      onClick={() =>
-                        // token.approved ? handleNFTClick(token) : approve()
-                        handleNFTClick(token)
-                      }
-                      tokenID={token.id}
-                      uri={token.uri}
-                      approved={token.approved}
-                    />
-                  </Grid>
+                  // <Grid item sm={6} md={3} key={token.id}>
+                  <NFTCard
+                    onClick={() =>
+                      // token.approved ? handleNFTClick(token) : approve()
+                      handleNFTClick(token)
+                    }
+                    tokenID={token.id}
+                    uri={token.uri}
+                    approved={token.approved}
+                  />
+                  // </Grid>
                 );
               })
             ) : (
               <Typography>You have no tokens for this contract!</Typography>
             )}
-          </Grid>
+          </Box>
         )}
       </Box>
       <Dialog open={linkWindowOpen}>

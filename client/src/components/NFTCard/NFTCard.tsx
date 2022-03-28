@@ -16,9 +16,19 @@ type Props = {
 const NFTCard = ({ approved, uri, tokenID, onClick }: Props) => {
   return (
     <Card raised sx={{ maxWidth: 345 }}>
-      <CardActionArea onClick={onClick}>
+      <CardActionArea
+        onClick={onClick}
+        sx={{
+          height: "100%",
+          display: "flex",
+          flexDirection: "column",
+        }}
+      >
         <CardMedia
           component="img"
+          sx={{
+            flexGrow: 1,
+          }}
           //   height="140"
           image={uri}
           alt={`Token #${tokenID}`}
@@ -27,16 +37,16 @@ const NFTCard = ({ approved, uri, tokenID, onClick }: Props) => {
           <Typography gutterBottom variant="h5" component="div">
             Token #{tokenID}
           </Typography>
-          {approved && (
-            <Box display="flex" alignItems="center">
-              <MdCheckCircle
-                color={theme.palette.secondary.main}
-                size="1.25rem"
-                style={{ marginRight: "0.5rem" }}
-              />
-              <Typography fontSize="0.75rem">Approved for deposit</Typography>
-            </Box>
-          )}
+          <Box display="flex" alignItems="center">
+            <MdCheckCircle
+              color={approved ? theme.palette.secondary.main : undefined}
+              size="1.25rem"
+              style={{ marginRight: "0.5rem" }}
+            />
+            <Typography fontSize="0.75rem">
+              {approved ? "A" : "Not a"}pproved for deposit
+            </Typography>
+          </Box>
         </CardContent>
       </CardActionArea>
     </Card>
