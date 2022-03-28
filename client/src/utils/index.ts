@@ -62,6 +62,7 @@ export const approveNFT = async (
     },
     true
   );
+  console.log(tx.ID);
   return await transitionMessageAlert(zilPay, tx.ID, "SetApprove");
 };
 
@@ -108,6 +109,37 @@ export const depositNFT = async (
   return await transitionMessageAlert(zilPay, tx.ID, "Deposit");
 };
 
+export const checkRedeem = async (
+  zilPay: any,
+  NFTId: string,
+  NFTAddress: string
+) => {
+  const { contracts } = zilPay;
+  const liquiShareContract = contracts.at(LIQUISHARE_ADDRESS);
+  const gasPrice = zilPay.utils.units.toQa("1000", zilPay.utils.units.Units.Li);
+  const tx = await liquiShareContract.call(
+    "Deposit_and_link",
+    [
+      {
+        vname: "nfttokenAddress",
+        type: "ByStr20",
+        value: NFTAddress,
+      },
+      {
+        vname: "tokenid",
+        type: "Uint256",
+        value: NFTId,
+      },
+    ],
+    {
+      gasPrice,
+      gasLimit: zilPay.utils.Long.fromNumber(9000),
+    },
+    true
+  );
+  return await transitionMessageAlert(zilPay, tx.ID, "Deposit");
+};
+
 const transitionMessageAlert = (
   zilPay: any,
   transactionId: string,
@@ -120,7 +152,6 @@ const transitionMessageAlert = (
         // subscription.unsubscribe();
         try {
           const Tx = await zilPay.blockchain.getTransaction(hash);
-          console.log(hash, Tx);
           // const code = Tx.receipt.transitions[0].msg.params[0].value;
           const {
             success: txSuccess,
@@ -130,9 +161,11 @@ const transitionMessageAlert = (
           // const message = decodeMessage(code);
           if (txSuccess) {
             const message = event_logs?.[0]?._eventname || "";
+            console.log(message);
             success(message || "No message received");
           } else {
             const message = exceptions?.[0]?.message || "";
+            console.log(message);
             error(message || "No message received");
           }
         } catch (err) {

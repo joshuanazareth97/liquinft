@@ -3,13 +3,7 @@ import Card from "@mui/material/Card";
 import CardContent from "@mui/material/CardContent";
 import CardMedia from "@mui/material/CardMedia";
 import React from "react";
-import {
-  MdApproval,
-  MdCheckCircle,
-  MdMail,
-  MdQuestionAnswer,
-  MdSend,
-} from "react-icons/md";
+import { MdApproval, MdMail } from "react-icons/md";
 import { theme } from "theme";
 
 type Props = {

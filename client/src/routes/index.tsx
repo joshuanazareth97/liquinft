@@ -1,6 +1,7 @@
 import AppLayout from "layouts/AppLayout/AppLayout";
 import Homepage from "pages/Homepage/Homepage";
 import NFTListPage from "pages/NFTListPage/NFTListPage";
+import RedeemListPage from "pages/RedeemListPage/RedeemListPage";
 
 interface IRoute {
   url: string;
@@ -21,5 +22,10 @@ export const routeList: IRoute[] = [
     Component: NFTListPage,
     protected: true,
     // LayoutElement: AppLayout,
+  },
+  {
+    url: "/redeem",
+    Component: RedeemListPage,
+    protected: true,
   },
 ];

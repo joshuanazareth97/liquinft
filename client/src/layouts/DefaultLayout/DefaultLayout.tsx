@@ -1,4 +1,5 @@
 import { MdOutlineGeneratingTokens } from "react-icons/md";
+import { RiExchangeFundsFill } from "react-icons/ri";
 import {
   AppBar,
   Box,
@@ -84,6 +85,11 @@ const DefaultLayout = ({ children }: Props) => {
             <Tooltip title="Your NFTs" placement="bottom">
               <IconButton component={RouterLink} to="/nft">
                 <MdOutlineGeneratingTokens />
+              </IconButton>
+            </Tooltip>
+            <Tooltip title="Your NFTs" placement="bottom">
+              <IconButton component={RouterLink} to="/redeem">
+                <RiExchangeFundsFill />
               </IconButton>
             </Tooltip>
             <Button

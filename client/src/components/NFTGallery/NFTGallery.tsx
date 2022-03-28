@@ -45,6 +45,7 @@ const NFTGallery = ({ title, address, symbol }: Props) => {
   const [linkWindowOpen, setLinkWindowOpen] = useState(false);
   const [ftAddress, setFTAddress] = useState("");
   const [ftCount, setFTCount] = useState<number | "">("");
+  const [transacting, setTransacting] = useState(false);
 
   const loadContract = useCallback(async () => {
     setLoading(true);
@@ -67,6 +68,7 @@ const NFTGallery = ({ title, address, symbol }: Props) => {
 
   const approve = useCallback(async () => {
     if (!zilPay || !selectedNFT) return;
+    console.log("clciked");
     try {
       const approvePromise = approveNFT(
         zilPay,
@@ -81,6 +83,8 @@ const NFTGallery = ({ title, address, symbol }: Props) => {
       const res = await approvePromise;
     } catch (err) {
       console.log(err);
+    } finally {
+      loadContract();
     }
   }, [zilPay, selectedNFT]);
 
@@ -115,6 +119,8 @@ const NFTGallery = ({ title, address, symbol }: Props) => {
       setLinkWindowOpen(false);
     } catch (err) {
       console.log(err);
+    } finally {
+      loadContract();
     }
   }, [zilPay, selectedNFT, ftAddress, ftCount]);
 
@@ -129,37 +135,39 @@ const NFTGallery = ({ title, address, symbol }: Props) => {
         paddingBottom="2rem"
       >
         <Box marginBottom="0.5rem" display="flex" alignItems="center">
-          <IconButton onClick={loadContract} style={{ marginRight: "0.5rem" }}>
-            <MdRefresh color={theme.palette.primary.main} />
-          </IconButton>
           <Typography variant="h6" fontWeight="bold">
             {title} ({symbol})
           </Typography>
+          <IconButton onClick={loadContract} style={{ marginRight: "0.5rem" }}>
+            <MdRefresh color={theme.palette.primary.main} />
+          </IconButton>
         </Box>
         {loading && <LinearProgress sx={{ alignSelf: "stretch" }} />}
-        {!loading && (
-          <Box
-            sx={{
-              display: "grid",
-              gridTemplateColumns: {
-                xs: "repeat(1, 1fr)",
-                sm: "repeat(2, 1fr)",
-                md: "repeat(3, 1fr)",
-                lg: "repeat(5, 1fr)",
-                // xl: "repeat(6, 1fr)",
-              },
-              gap: 6,
-            }}
-          >
-            {tokens?.length ? (
-              tokens.map((token) => {
+        {!loading &&
+          (tokens?.length ? (
+            <Box
+              sx={{
+                display: "grid",
+                gridTemplateColumns: {
+                  xs: "repeat(1, 1fr)",
+                  sm: "repeat(2, 1fr)",
+                  md: "repeat(3, 1fr)",
+                  lg: "repeat(5, 1fr)",
+                  // xl: "repeat(6, 1fr)",
+                },
+                gap: 6,
+              }}
+            >
+              {tokens.map((token) => {
                 return (
                   // <Grid item sm={6} md={3} key={token.id}>
                   <NFTCard
                     key={token.id}
                     onClick={() =>
                       // token.approved ? handleNFTClick(token) : approve()
-                      handleNFTClick(token)
+                      {
+                        handleNFTClick(token);
+                      }
                     }
                     tokenID={token.id}
                     uri={token.uri}
@@ -167,12 +175,11 @@ const NFTGallery = ({ title, address, symbol }: Props) => {
                   />
                   // </Grid>
                 );
-              })
-            ) : (
-              <Typography>You have no tokens for this contract!</Typography>
-            )}
-          </Box>
-        )}
+              })}
+            </Box>
+          ) : (
+            <Typography>You have no tokens for this contract!</Typography>
+          ))}
       </Box>
       <Dialog open={linkWindowOpen}>
         <DialogTitle>Deposit and Link</DialogTitle>
@@ -225,13 +232,19 @@ const NFTGallery = ({ title, address, symbol }: Props) => {
         </DialogContent>
         <DialogActions>
           <Button
+            disabled={transacting}
             onClick={() => setLinkWindowOpen(false)}
             variant="outlined"
             color="primary"
           >
             Cancel
           </Button>
-          <Button onClick={deposit} variant="contained" color="primary">
+          <Button
+            disabled={transacting}
+            onClick={deposit}
+            variant="contained"
+            color="primary"
+          >
             Deposit
           </Button>
         </DialogActions>
