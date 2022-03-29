@@ -39,6 +39,7 @@ const RedeemListPage = (props: Props) => {
   const { zilPay, userNFTs, setUserNFTs } = useZilpay();
   const [contractState, setContractState] = useState<any>(null);
   const [loading, setLoading] = useState(true);
+  const [transacting, setTransacting] = useState(false);
   const [list, setList] = useState<IFracNFT[] | null>(null);
 
   const loadContract = useCallback(async () => {
@@ -56,6 +57,7 @@ const RedeemListPage = (props: Props) => {
 
   const loadTokens = useCallback(async () => {
     if (!contractState || !zilPay) return;
+    console.log("called1");
     const fns = getFractionalised(contractState);
     const final: any = [];
     for (let key in fns) {
@@ -70,6 +72,7 @@ const RedeemListPage = (props: Props) => {
         });
       });
     }
+    console.log(fns, final);
     setList(final);
   }, [contractState, zilPay, setList]);
 
@@ -79,19 +82,28 @@ const RedeemListPage = (props: Props) => {
 
   const handleTokenClick = useCallback(
     async (token: IFracNFT) => {
-      const txPromise = token.readyToRedeem
-        ? checkRedeem(zilPay, token.id, token.address)
-        : transferFT(zilPay, token.tokens_needed, token.ft);
-      const res = await toast.promise(txPromise, {
-        pending: token.readyToRedeem
-          ? "Redeeming NFT..."
-          : "Burning FTs to prepare NFT for redemption",
-        success: "Success!",
-        error: "There was an error",
-      });
-      loadTokens();
+      try {
+        setTransacting(true);
+        const txPromise = token.readyToRedeem
+          ? checkRedeem(zilPay, token.id, token.address, token.ft)
+          : transferFT(zilPay, token.tokens_needed, token.ft);
+        const res = await toast.promise(txPromise, {
+          pending: token.readyToRedeem
+            ? "Redeeming NFT..."
+            : "Burning FTs to prepare NFT for redemption",
+          success: "Success!",
+          error: "There was an error",
+        });
+        console.log(res);
+      } catch (err) {
+        console.log(err);
+      } finally {
+        setTransacting(false);
+        loadContract();
+        loadTokens();
+      }
     },
-    [zilPay, loadTokens]
+    [zilPay, loadTokens, setTransacting]
   );
 
   return (
@@ -150,6 +162,7 @@ const RedeemListPage = (props: Props) => {
           {list?.map((token) => {
             return (
               <NFTCard
+                disabled={transacting}
                 key={token.ft}
                 onClick={() => handleTokenClick(token)}
                 uri={token.uri}
