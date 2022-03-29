@@ -1,1 +1,1 @@
-export const LIQUISHARE_ADDRESS = "0x687b2be5d9531107e8eff8fb5efa654d44ceafe8";
+export const LIQUISHARE_ADDRESS = "0x9bb2cdc633c250d2cd79a3566b1c1398f10921c0";
