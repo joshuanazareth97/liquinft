@@ -69,6 +69,7 @@ const DefaultLayout = ({ children }: Props) => {
             component={RouterLink}
             to="/"
             sx={{
+              display: "flex",
               "& img": {
                 width: "10rem",
               },
@@ -123,6 +124,9 @@ const DefaultLayout = ({ children }: Props) => {
       <Container
         sx={{
           paddingTop: "3rem",
+          display: "flex",
+          flexDirection: "column",
+          minHeight: "calc(100vh - 64px)",
         }}
       >
         {children ?? <Outlet />}

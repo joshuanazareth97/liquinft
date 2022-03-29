@@ -1,3 +1,8 @@
+@font-face {
+  font-family: "Finance";
+  src: local("Finance"), url(./assets/fonts/finance.ttf) format(".ttf");
+}
+
 .App {
   text-align: center;
 }
@@ -35,4 +40,8 @@
   to {
     transform: rotate(360deg);
   }
+}
+
+#title {
+  font-family: "Finance";
 }
