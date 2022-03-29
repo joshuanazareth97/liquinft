@@ -150,7 +150,7 @@ const RedeemListPage = (props: Props) => {
           {list?.map((token) => {
             return (
               <NFTCard
-                key={token.id}
+                key={token.ft}
                 onClick={() => handleTokenClick(token)}
                 uri={token.uri}
                 primaryText={

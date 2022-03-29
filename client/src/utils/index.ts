@@ -223,7 +223,7 @@ export const getUserNFTs = (contractState: any, address: string) => {
 };
 
 export const getFractionalised = (contractState: any) => {
-  const { nftaddr, nftid, num_shares2, tokbalance } = contractState;
+  const { nftaddr, nftid, num_shares2, tokbalance, isRedeemed } = contractState;
   const temp: any = {};
   Object.keys(nftaddr).forEach((key: string) => {
     const nftaddrVal = nftaddr[key];
@@ -232,14 +232,26 @@ export const getFractionalised = (contractState: any) => {
   const result: any = {};
   Object.keys(temp).forEach((key: string) => {
     result[key] = temp[key].map((ft: string) => {
-      return {
-        ft,
-        id: nftid[ft],
-        tokens_needed: num_shares2[ft],
-        transferred: tokbalance[ft] || 0,
-        readyToRedeem: num_shares2[ft] === tokbalance[ft],
-      };
+      if (!(ft in isRedeemed))
+        return {
+          ft,
+          id: nftid[ft],
+          tokens_needed: num_shares2[ft],
+          transferred: tokbalance[ft] || 0,
+          readyToRedeem: num_shares2[ft] === tokbalance[ft],
+        };
     });
   });
+  return result;
+};
+
+export const makeid = (length: number) => {
+  var result = "";
+  var characters =
+    "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+  var charactersLength = characters.length;
+  for (var i = 0; i < length; i++) {
+    result += characters.charAt(Math.floor(Math.random() * charactersLength));
+  }
   return result;
 };
