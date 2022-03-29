@@ -143,7 +143,8 @@ export const transferFT = async (
 export const checkRedeem = async (
   zilPay: any,
   NFTId: string,
-  NFTAddress: string
+  NFTAddress: string,
+  FTAddress: string
 ) => {
   const { contracts } = zilPay;
   const liquiShareContract = contracts.at(LIQUISHARE_ADDRESS);
@@ -160,6 +161,11 @@ export const checkRedeem = async (
         vname: "tokenid",
         type: "Uint256",
         value: NFTId,
+      },
+      {
+        vname: "fraxshare",
+        type: "ByStr20",
+        value: FTAddress,
       },
     ],
     {
@@ -180,7 +186,7 @@ const transitionMessageAlert = (
     const subscription = zilPay.wallet
       .observableTransaction(transactionId)
       .subscribe(async (hash: any) => {
-        // subscription.unsubscribe();
+        subscription.unsubscribe();
         try {
           const Tx = await zilPay.blockchain.getTransaction(hash);
           // const code = Tx.receipt.transitions[0].msg.params[0].value;
@@ -231,8 +237,10 @@ export const getFractionalised = (contractState: any) => {
   });
   const result: any = {};
   Object.keys(temp).forEach((key: string) => {
-    result[key] = temp[key].map((ft: string) => {
-      if (!(ft in isRedeemed))
+    result[key] = temp[key]
+      .filter((ft: string) => !(ft in isRedeemed))
+      .map((ft: string) => {
+        console.log(ft, isRedeemed);
         return {
           ft,
           id: nftid[ft],
@@ -240,7 +248,7 @@ export const getFractionalised = (contractState: any) => {
           transferred: tokbalance[ft] || 0,
           readyToRedeem: num_shares2[ft] === tokbalance[ft],
         };
-    });
+      });
   });
   return result;
 };
