@@ -1,4 +1,5 @@
 import { MdOutlineGeneratingTokens } from "react-icons/md";
+import logoImg from "assets/images/logo-1.png";
 import { RiExchangeFundsFill } from "react-icons/ri";
 import {
   AppBar,
@@ -67,8 +68,13 @@ const DefaultLayout = ({ children }: Props) => {
             variant="h6"
             component={RouterLink}
             to="/"
+            sx={{
+              "& img": {
+                width: "10rem",
+              },
+            }}
           >
-            LiquiNFT
+            <img src={logoImg} />
           </Typography>
           <Box
             sx={{
