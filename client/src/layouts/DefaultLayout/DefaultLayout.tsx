@@ -86,7 +86,7 @@ const DefaultLayout = ({ children }: Props) => {
                 <MdOutlineGeneratingTokens />
               </IconButton>
             </Tooltip>
-            <Tooltip title="Your NFTs" placement="bottom">
+            <Tooltip title="Redeem" placement="bottom">
               <IconButton component={RouterLink} to="/redeem">
                 <RiExchangeFundsFill />
               </IconButton>
@@ -102,7 +102,7 @@ const DefaultLayout = ({ children }: Props) => {
               onClick={
                 currentUser
                   ? async () => {
-                      await zilPay.wallet.disconnect();
+                      //   await zilPay.wallet.disconnect();
                     }
                   : handleWalletConnect
               }
