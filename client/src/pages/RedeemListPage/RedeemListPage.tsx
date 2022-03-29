@@ -3,6 +3,7 @@ import {
   Button,
   Collapse,
   IconButton,
+  LinearProgress,
   TextField,
   Tooltip,
   Typography,
@@ -90,7 +91,7 @@ const RedeemListPage = (props: Props) => {
       });
       loadTokens();
     },
-    [zilPay]
+    [zilPay, loadTokens]
   );
 
   return (
@@ -130,37 +131,41 @@ const RedeemListPage = (props: Props) => {
           </Box>
         </Typography>
       </Box>
-      <Box
-        sx={{
-          display: "grid",
-          gridTemplateColumns: {
-            xs: "repeat(1, 1fr)",
-            sm: "repeat(2, 1fr)",
-            md: "repeat(3, 1fr)",
-            lg: "repeat(5, 1fr)",
-            // xl: "repeat(6, 1fr)",
-          },
-          gap: 6,
-        }}
-      >
-        {list?.map((token) => {
-          return (
-            <NFTCard
-              key={token.id}
-              onClick={() => handleTokenClick(token)}
-              uri={token.uri}
-              primaryText={
-                <Typography fontWeight="bold">Token #{token.id}</Typography>
-              }
-              secondaryText={
-                <Typography fontSize="0.75rem" fontWeight="bold">
-                  {token.transferred} / {token.tokens_needed} deposited
-                </Typography>
-              }
-            />
-          );
-        })}
-      </Box>
+      {loading ? (
+        <LinearProgress />
+      ) : (
+        <Box
+          sx={{
+            display: "grid",
+            gridTemplateColumns: {
+              xs: "repeat(1, 1fr)",
+              sm: "repeat(2, 1fr)",
+              md: "repeat(3, 1fr)",
+              lg: "repeat(5, 1fr)",
+              // xl: "repeat(6, 1fr)",
+            },
+            gap: 6,
+          }}
+        >
+          {list?.map((token) => {
+            return (
+              <NFTCard
+                key={token.id}
+                onClick={() => handleTokenClick(token)}
+                uri={token.uri}
+                primaryText={
+                  <Typography fontWeight="bold">Token #{token.id}</Typography>
+                }
+                secondaryText={
+                  <Typography fontSize="0.75rem" fontWeight="bold">
+                    {token.transferred} / {token.tokens_needed} deposited
+                  </Typography>
+                }
+              />
+            );
+          })}
+        </Box>
+      )}
     </>
   );
 };
