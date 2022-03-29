@@ -1,4 +1,9 @@
-import { Box, CardActionArea, Typography } from "@mui/material";
+import {
+  Box,
+  CardActionArea,
+  CardActionsProps,
+  Typography,
+} from "@mui/material";
 import Card from "@mui/material/Card";
 import CardContent from "@mui/material/CardContent";
 import CardMedia from "@mui/material/CardMedia";
@@ -11,13 +16,20 @@ type Props = {
   primaryText?: React.ReactNode;
   secondaryText?: React.ReactNode;
   onClick?: React.MouseEventHandler<HTMLButtonElement>;
+  disabled?: boolean;
 };
 
-const NFTCard = ({ secondaryText, uri, primaryText, onClick }: Props) => {
+const NFTCard = ({
+  secondaryText,
+  uri,
+  primaryText,
+  onClick,
+  disabled,
+}: Props) => {
   return (
     <Card raised sx={{ maxWidth: 345 }}>
       <CardActionArea
-        onClick={onClick}
+        onClick={!!disabled ? undefined : onClick}
         sx={{
           height: "100%",
           display: "flex",
