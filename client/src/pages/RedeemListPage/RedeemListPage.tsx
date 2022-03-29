@@ -57,7 +57,6 @@ const RedeemListPage = (props: Props) => {
 
   const loadTokens = useCallback(async () => {
     if (!contractState || !zilPay) return;
-    console.log("called1");
     const fns = getFractionalised(contractState);
     const final: any = [];
     for (let key in fns) {
@@ -72,7 +71,6 @@ const RedeemListPage = (props: Props) => {
         });
       });
     }
-    console.log(fns, final);
     setList(final);
   }, [contractState, zilPay, setList]);
 

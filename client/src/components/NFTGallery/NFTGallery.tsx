@@ -168,12 +168,8 @@ const NFTGallery = ({ title, address, symbol }: Props) => {
                   // <Grid item sm={6} md={3} key={token.id}>
                   <NFTCard
                     key={token.id}
-                    onClick={() =>
-                      // token.approved ? handleNFTClick(token) : approve()
-                      {
-                        handleNFTClick(token);
-                      }
-                    }
+                    onClick={() => handleNFTClick(token)}
+                    // token.approved ? handleNFTClick(token) : approve()
                     primaryText={
                       <Typography gutterBottom variant="h5" component="div">
                         Token #{token.id}

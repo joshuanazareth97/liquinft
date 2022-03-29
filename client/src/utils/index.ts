@@ -31,7 +31,6 @@ export const callContract = async (zilPay: any) => {
     },
     true
   );
-  console.log(tx);
 };
 
 export const approveNFT = async (
@@ -62,7 +61,6 @@ export const approveNFT = async (
     },
     true
   );
-  console.log(tx.ID);
   return await transitionMessageAlert(zilPay, tx.ID, "SetApprove");
 };
 
@@ -198,15 +196,12 @@ const transitionMessageAlert = (
           // const message = decodeMessage(code);
           if (txSuccess) {
             const message = event_logs?.[0]?._eventname || "";
-            console.log(message);
             success(message || "No message received");
           } else {
             const message = exceptions?.[0]?.message || "";
-            console.log(message);
             error(message || "No message received");
           }
         } catch (err) {
-          console.log(err);
           error("Transaction error");
         }
       });
@@ -240,7 +235,6 @@ export const getFractionalised = (contractState: any) => {
     result[key] = temp[key]
       .filter((ft: string) => !(ft in isRedeemed))
       .map((ft: string) => {
-        console.log(ft, isRedeemed);
         return {
           ft,
           id: nftid[ft],
