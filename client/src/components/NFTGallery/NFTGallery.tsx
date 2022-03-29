@@ -106,6 +106,7 @@ const NFTGallery = ({ title, address, symbol }: Props) => {
 
   const deposit = useCallback(async () => {
     if (!zilPay || !selectedNFT || !ftAddress || !ftCount) return;
+    setTransacting(true);
     try {
       const depositPromise = depositNFT(
         zilPay,
@@ -123,6 +124,7 @@ const NFTGallery = ({ title, address, symbol }: Props) => {
     } catch (err) {
       console.log(err);
     } finally {
+      setTransacting(false);
       loadContract();
     }
   }, [zilPay, selectedNFT, ftAddress, ftCount]);
