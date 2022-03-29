@@ -2,10 +2,12 @@ import { Box, Button, Typography } from "@mui/material";
 import React from "react";
 import { Link } from "react-router-dom";
 import heroImg from "assets/images/hero_img.png";
+import { useZilpay } from "contexts/ZilContext/ZilContext";
 
 type Props = {};
 
 const Homepage = (props: Props) => {
+  const { zilPay } = useZilpay();
   return (
     <Box flexGrow={1} display="flex" alignItems="center">
       <Box
@@ -57,10 +59,19 @@ const Homepage = (props: Props) => {
             gap: 3,
           }}
         >
-          <Button href="" variant="contained" color="primary">
+          <Button
+            // onClick={async () => await zilPay.wallet.connect()}
+            // href=""
+            variant="contained"
+            color="primary"
+          >
             Get Started
           </Button>
-          <Button href="" variant="outlined" color="primary">
+          <Button
+            href="https://github.com/FoundationCryptoLabs/LiquiNFT"
+            variant="outlined"
+            color="primary"
+          >
             Read the whitepaper
           </Button>
         </Box>
