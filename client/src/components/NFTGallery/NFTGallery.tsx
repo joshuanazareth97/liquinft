@@ -97,12 +97,15 @@ const NFTGallery = ({ title, address, symbol }: Props) => {
       setSelectedNFT({ ...token, address });
       if (token.approved) {
         setLinkWindowOpen(true);
-      } else {
-        approve();
       }
     },
     [currentUser, contractState, approve]
   );
+
+  useEffect(() => {
+    if (selectedNFT?.approved) return;
+    approve();
+  }, [selectedNFT]);
 
   const deposit = useCallback(async () => {
     if (!zilPay || !selectedNFT || !ftAddress || !ftCount) return;
